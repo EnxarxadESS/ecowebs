@@ -8,8 +8,13 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.static('public'));
 
+app.get('/ping', (req, res) => {
+  res.send('pong');
+});
+
 app.listen(port, () => {
   console.log(`Servidor en marxa a http://localhost:${port}`);
 });
+
 
 
