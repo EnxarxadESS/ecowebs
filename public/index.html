@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ecograder ESS</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 2rem; }
+    input, button { padding: 0.5rem; font-size: 1rem; }
+    ul { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Analitza la teva web</h1>
+  <form id="url-form">
+    <input type="text" id="website-url" placeholder="https://exemple.cat" required>
+    <button type="submit">Analitza</button>
+  </form>
+  <div id="results"></div>
+
+  <script>
+    document.getElementById('url-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const url = document.getElementById('website-url').value;
+
+      const response = await fetch('/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
+      });
+
+      const data = await response.json();
+
+      document.getElementById('results').innerHTML = `
+        <h2>Resultats per ${data.url}</h2>
+        <ul>
+          <li><strong>Puntuació:</strong> ${data.score}/100</li>
+          <li><strong>Pes de la pàgina:</strong> ${data.pageWeight}</li>
+          <li><strong>Hosting verd:</strong> ${data.greenHost ? 'Sí' : 'No'}</li>
+          <li><strong>Recomanacions:</strong><ul>
+            ${data.recommendations.map(r => `<li>${r}</li>`).join('')}
+          </ul></li>
+        </ul>`;
+    });
+  </script>
+</body>
+</html>
